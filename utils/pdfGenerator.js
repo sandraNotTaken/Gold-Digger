@@ -1,4 +1,4 @@
-export async function emailMocker(req, res) {
+export function emailMocker(req, res) {
     if (req.method === "POST") {
         let body = ""
         req.on("data", chunk => {

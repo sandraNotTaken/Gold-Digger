@@ -9,9 +9,24 @@ import { priceGenerator } from "./utils/priceGenerator.js"
 const myEmitter = new EventEmitter()
 const PORT = 3000
 const server = http.createServer(async (req, res) => {
-    res.WriteHead(200, { "Content-Type": "text/html" })
-    res.end("<h1>Hello World</h1>")
+    staticServer(req, res, path.join(process.cwd(), "public"))
+    
+    if (req.url.startsWith("/api/price") && req.method === "POST") {
+        let body = ""
+        req.on("data", (chunk) => {
+            body += chunk.toString()
+        })
+        req.on("end", async () => {
+            const { basePrice } = JSON.parse(body)
+            const price = priceGenerator(basePrice)
+            res.writeHead(200, { "Content-Type": "application/json" })
+            res.end(JSON.stringify({ price }))
+        })
+    }
+    res.writeHead(404, { "Content-Type": "text/plain" })
+    res.end("404 Not Found")
 })
+
 
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)

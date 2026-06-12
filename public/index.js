@@ -2,6 +2,8 @@ const priceElement = document.getElementById("price")
 const refreshBtn = document.getElementById("refreshPrice")
 const investBtn = document.getElementById("invest-btn")
 const outputDialog = document.getElementById("output-dialog")
+const priceDisplay = document.getElementById("price-display")
+const closeDialog = document.getElementById("close-dialog")
 
 refreshBtn.addEventListener("click", fetchPrice)
 
@@ -16,16 +18,16 @@ closeDialog.addEventListener("click", () => {
 
 async function fetchPrice() {
     try {
-        const response = await fetch("/api/price", {
+        const response = await fetch("http://localhost:3000/api/price", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ basePrice: 100 })
         })
         const data = await response.json()
-        priceElement.textContent = `Current Price: $${data.price}`
+        priceDisplay.textContent = data.price.toFixed(2)
     } catch (err) {
         console.error("Error fetching price:", err)
-        priceElement.textContent = "Error fetching price"
+        priceDisplay.textContent = "Error fetching price"
     }
 }
 
